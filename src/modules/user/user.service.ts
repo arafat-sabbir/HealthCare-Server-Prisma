@@ -1,10 +1,12 @@
 import { UserRole } from '@prisma/client';
 import { prisma } from '../../app';
+import bcrypt from 'bcrypt';
 
 const createAdminIntoDb = async (payload: any) => {
+  const hashedPassword = bcrypt.hashSync(payload.password, 10);
   const userData = {
     email: payload.admin.email,
-    password: payload.password,
+    password: hashedPassword,
     role: UserRole.ADMIN,
   };
   const result = await prisma.$transaction(async (transactionClient) => {
@@ -12,7 +14,7 @@ const createAdminIntoDb = async (payload: any) => {
       data: userData,
     });
     const newAdmin = await transactionClient.admin.create({
-      data: payload.admin,
+      data: { ...payload.admin },
     });
     return newAdmin;
   });
