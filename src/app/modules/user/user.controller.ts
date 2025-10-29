@@ -2,8 +2,11 @@ import { UserRole } from "@prisma/client";
 import catchAsync from "../../shared/catchAsync";
 import sendResponse from "../../shared/sendResponse";
 import UserService from "./user.service";
+import { uploadImage } from "../../shared/multer";
+import fs from 'fs';
 
 const createUser = catchAsync(async (req, res) => {
+ 
     // Logic to create a user
     const result = await UserService.createUser(req.body);
     sendResponse(res, {
